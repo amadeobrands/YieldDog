@@ -3,12 +3,13 @@ Interfaces:
 IGateway:
 [ ] Deposit()
 [ ] Redeem() (withdraw)
+[ ] TotalAssets() (AUM priced in weth)
+[ ] sharesToAssets() (MY assets, priced in weth)
+[ ] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
 
 IMasterPool:
 [ ] ERC 20 compliant (balanceOf, transfer)
 [ ] AddLiquidity()
 [ ] RemoveLiquidity()
-[ ] TotalAssets() (AUM priced in weth)
-[ ] sharesToAssets() (MY assets, priced in weth)
-[ ] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
+
 
