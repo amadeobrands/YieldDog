@@ -42,11 +42,17 @@ contract MasterPool is IMasterPool, ERC20 {
         // quick check for amounts
         require(amount0 > 0, "amount0 is 0");
         require(amount1 > 0, "amount1 is 0");
+        // both amount must be equal for hackthon
+        require(amount0 == amount1, "amount0 and amount1 must be equal");
+        // shares is same amount as single amount
+        uint shares = amount0;
         // transfer the assets to the contract
         asset0.transferFrom(msg.sender, address(this), amount0);
         asset1.transferFrom(msg.sender, address(this), amount1);
         // call the inhereted mint function from erc20
         _mint(receiver, shares);
+        // update reserves
+        syncReserves();
         // emit the event
         emit AddLiquidity(msg.sender, receiver, amount0, amount1);
     }
@@ -62,5 +68,10 @@ contract MasterPool is IMasterPool, ERC20 {
     {
         _reserve0 = reserve0;
         _reserve1 = reserve1;
+    }
+
+    function syncReserves() public {
+        reserve0 = asset0.balanceOf(address(this));
+        reserve1 = asset1.balanceOf(address(this));
     }
 }

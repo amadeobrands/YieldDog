@@ -44,15 +44,19 @@ contract MasterPoolTest is IMasterPool, Test {
     }
 
     function testAddliquidity() public {
+        uint256 amount0 = 0;
+        uint256 amount1 = 0;
         uint256 depositAmount = 1e18;
         // approving the pools tokens first
         balLSD.approve(address(pool), depositAmount);
         crvLSD.approve(address(pool), depositAmount);
 
         // check current liquidity
-        (uint256 amount0, uint256 amount1) = pool.totalReserves();
+        (amount0, amount1) = pool.totalReserves();
         assertEq(amount0, 0);
         assertEq(amount1, 0);
+        // check current shares
+        assertEq(pool.balanceOf(address(this)), 0);
 
         // check event
         // Now checking the event
@@ -67,8 +71,20 @@ contract MasterPoolTest is IMasterPool, Test {
         // ) external;
         vm.expectEmit(true, true, false, true, address(pool));
         // We emit the event we expect to see.
-        emit AddLiquidity(address(this), address(this), 100, 100);
+        emit AddLiquidity(
+            address(this),
+            address(this),
+            depositAmount,
+            depositAmount
+        );
         // adding liquidity
-        pool.addLiquidity(100, 100, address(this));
+        pool.addLiquidity(depositAmount, depositAmount, address(this));
+
+        // check new liquidity
+        (amount0, amount1) = pool.totalReserves();
+        assertEq(amount0, depositAmount);
+        assertEq(amount1, depositAmount);
+        // check new shares
+        assertEq(pool.balanceOf(address(this)), depositAmount);
     }
 }
