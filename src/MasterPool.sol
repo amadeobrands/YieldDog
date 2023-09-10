@@ -68,13 +68,53 @@ contract MasterPool is IMasterPool, ERC20 {
         // todo: have a real shares calculation
         amount0 = shares;
         amount1 = shares;
-
-        _burn(msg.sender, shares);
-
-        emit RemoveLiquidity(msg.sender, receiver, amount0, amount1, shares);
-
+        // transfer tokens
         asset0.transfer(receiver, amount0);
         asset1.transfer(receiver, amount1);
+        // call the inhereted burn function from erc20
+        _burn(msg.sender, shares);
+        // update reserves
+        syncReserves();
+        // emit the event
+        emit RemoveLiquidity(msg.sender, receiver, amount0, amount1, shares);
+    }
+
+    function swap(
+        uint256 amount0In,
+        uint256 amount1In,
+        address to
+    ) external virtual {
+        // quick reserves check
+        require(reserve0 > 0 || reserve1 > 0, "pool empty");
+
+        // quick check for amounts
+        if (amount0In > 0) {
+            require(amount1In == 0, "can only have one input");
+        } else if (amount1In > 0) {
+            require(amount0In == 0, "can only have one input");
+        } else {
+            revert("no input");
+        }
+
+        // todo: have an actual calculation xy=k
+        uint256 amount0Out = amount1In;
+        uint256 amount1Out = amount0In;
+        // do the swap
+        if (amount0In > 0) {
+            // transfer the assets to the contract
+            asset0.transferFrom(msg.sender, address(this), amount0In);
+            // send the other asset to the receiver
+            asset1.transfer(to, amount1Out);
+        } else {
+            // transfer the assets to the contract
+            asset1.transferFrom(msg.sender, address(this), amount1In);
+            // send the other asset to the receiver
+            asset0.transfer(to, amount0Out);
+        }
+        // update reserves
+        syncReserves();
+        // emit the event
+        emit Swap(msg.sender, to, amount0In, amount1In, amount0Out, amount1Out);
     }
 
     /*//////////////////////////////////////////////////////////////

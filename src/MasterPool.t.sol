@@ -108,8 +108,6 @@ contract MasterPoolTest is IMasterPool, Test {
             depositAmount,
             address(this)
         );
-        // check liquidity
-        (amount0, amount1) = pool.totalReserves();
 
         vm.expectEmit(true, true, false, true, address(pool));
         // We emit the event we expect to see.
@@ -128,9 +126,43 @@ contract MasterPoolTest is IMasterPool, Test {
 
         // check new liquidity
         (amount0, amount1) = pool.totalReserves();
-        assertEq(amount0, depositAmount);
-        assertEq(amount1, depositAmount);
+        assertEq(amount0, 0);
+        assertEq(amount1, 0);
         // check new shares
         assertEq(pool.balanceOf(address(this)), 0);
+    }
+
+    function testSwap() public {
+        uint256 depositAmount = 10e18;
+        uint256 swapAmount = 1e18;
+        // approving the pools tokens first
+        balLSD.approve(address(pool), depositAmount);
+        crvLSD.approve(address(pool), depositAmount);
+        // adding liquidity
+        pool.addLiquidity(depositAmount, depositAmount, address(this));
+
+        // check my current balance
+        assertEq(balLSD.balanceOf(address(this)), 90e18);
+        assertEq(crvLSD.balanceOf(address(this)), 90e18);
+
+        // approve before swap
+        balLSD.approve(address(pool), swapAmount);
+        // event debugging
+        vm.expectEmit(true, true, false, true, address(pool));
+        // We emit the event we expect to see.
+        emit Swap(
+            address(this),
+            address(this),
+            swapAmount, // amount0In
+            0, // amount1In
+            0, // amount0Out
+            swapAmount // amount1Out
+        );
+
+        pool.swap(swapAmount, 0, address(this));
+
+        // check my current balance
+        assertEq(balLSD.balanceOf(address(this)), 89e18);
+        assertEq(crvLSD.balanceOf(address(this)), 91e18);
     }
 }
