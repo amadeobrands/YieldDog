@@ -45,7 +45,8 @@ contract MasterPool is IMasterPool, ERC20 {
         // both amount must be equal for hackthon
         require(amount0 == amount1, "amount0 and amount1 must be equal");
         // shares is same amount as single amount
-        uint shares = amount0;
+        // todo: have a real shares calculation
+        shares = amount0;
         // transfer the assets to the contract
         asset0.transferFrom(msg.sender, address(this), amount0);
         asset1.transferFrom(msg.sender, address(this), amount1);
@@ -54,7 +55,26 @@ contract MasterPool is IMasterPool, ERC20 {
         // update reserves
         syncReserves();
         // emit the event
-        emit AddLiquidity(msg.sender, receiver, amount0, amount1);
+        emit AddLiquidity(msg.sender, receiver, amount0, amount1, shares);
+    }
+
+    function removeLiquidity(
+        uint256 shares,
+        address receiver
+    ) public virtual returns (uint256 amount0, uint256 amount1) {
+        // quick check for amounts
+        require(shares > 0, "shares is 0");
+        // shares is same amount as single amount
+        // todo: have a real shares calculation
+        amount0 = shares;
+        amount1 = shares;
+
+        _burn(msg.sender, shares);
+
+        emit RemoveLiquidity(msg.sender, receiver, amount0, amount1, shares);
+
+        asset0.transfer(receiver, amount0);
+        asset1.transfer(receiver, amount1);
     }
 
     /*//////////////////////////////////////////////////////////////

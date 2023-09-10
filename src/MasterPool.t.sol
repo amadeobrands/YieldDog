@@ -74,11 +74,18 @@ contract MasterPoolTest is IMasterPool, Test {
         emit AddLiquidity(
             address(this),
             address(this),
-            depositAmount,
-            depositAmount
+            depositAmount, // amount0
+            depositAmount, // amount1
+            depositAmount // shares
         );
         // adding liquidity
-        pool.addLiquidity(depositAmount, depositAmount, address(this));
+        uint256 shares = pool.addLiquidity(
+            depositAmount,
+            depositAmount,
+            address(this)
+        );
+        // check returned shares
+        assertEq(shares, depositAmount);
 
         // check new liquidity
         (amount0, amount1) = pool.totalReserves();
@@ -86,5 +93,44 @@ contract MasterPoolTest is IMasterPool, Test {
         assertEq(amount1, depositAmount);
         // check new shares
         assertEq(pool.balanceOf(address(this)), depositAmount);
+    }
+
+    function testRemoveliquidity() public {
+        uint256 amount0 = 0;
+        uint256 amount1 = 0;
+        uint256 depositAmount = 1e18;
+        // approving the pools tokens first
+        balLSD.approve(address(pool), depositAmount);
+        crvLSD.approve(address(pool), depositAmount);
+        // adding liquidity
+        uint256 shares = pool.addLiquidity(
+            depositAmount,
+            depositAmount,
+            address(this)
+        );
+        // check liquidity
+        (amount0, amount1) = pool.totalReserves();
+
+        vm.expectEmit(true, true, false, true, address(pool));
+        // We emit the event we expect to see.
+        emit RemoveLiquidity(
+            address(this),
+            address(this),
+            depositAmount, // amount0
+            depositAmount, // amount1
+            depositAmount // shares
+        );
+        // removing liquidity
+        (amount0, amount1) = pool.removeLiquidity(shares, address(this));
+        // check returned tokens
+        assertEq(amount0, depositAmount);
+        assertEq(amount1, depositAmount);
+
+        // check new liquidity
+        (amount0, amount1) = pool.totalReserves();
+        assertEq(amount0, depositAmount);
+        assertEq(amount1, depositAmount);
+        // check new shares
+        assertEq(pool.balanceOf(address(this)), 0);
     }
 }

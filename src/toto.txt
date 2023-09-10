@@ -11,5 +11,6 @@ MasterPool:
 [x] constructor
 [x] ERC 20 compliant (balanceOf, transfer)
 [x] AddLiquidity()
-[ ] RemoveLiquidity()
+[x] RemoveLiquidity()
+[ ] Swap
 
