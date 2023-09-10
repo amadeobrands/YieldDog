@@ -1,15 +1,15 @@
 Interfaces:
 
-IGateway:
+Gateway:
 [ ] Deposit()
 [ ] Redeem() (withdraw)
 [ ] TotalAssets() (AUM priced in weth)
 [ ] sharesToAssets() (MY assets, priced in weth)
 [ ] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
 
-IMasterPool:
-[ ] ERC 20 compliant (balanceOf, transfer)
-[ ] AddLiquidity()
+MasterPool:
+[x] constructor
+[x] ERC 20 compliant (balanceOf, transfer)
+[x] AddLiquidity()
 [ ] RemoveLiquidity()
-
 
