@@ -54,6 +54,15 @@ contract MasterPoolTest is Test {
     MockERC20 internal _balLSD;
     MockERC20 internal _crvLSD;
 
+    // eth mainnet wsteth
+    IERC20 internal _wsteth =
+        IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0);
+    // eth mainnet reth
+    IERC20 internal _reth = IERC20(0xae78736Cd615f374D3085123A210448E74Fc6393);
+    // eth mainnet sfrxeth
+    IERC20 internal _sfrxeth =
+        IERC20(0xac3E018457B222d93114458476f3E3416Abbe38F);
+
     function setUp() public {
         // _wsteth = new MockERC20("Wrapped Staked Ether", "WSTETH", 18);
         // _reth = new MockERC20("Rocket Pool ETH", "RETH", 18);
@@ -62,7 +71,12 @@ contract MasterPoolTest is Test {
         _balLSD = new MockERC20("Balancer LSD", "BAL-LSD", 18);
         _crvLSD = new MockERC20("Curve LSD", "CRV-LSD", 18);
 
-        _pool = new MasterPool(_balLSD, _crvLSD, "YieldDogLSD", "YDLSD");
+        _pool = new MasterPool(
+            IERC20(address(_balLSD)),
+            IERC20(address(_crvLSD)),
+            "YieldDogLSD",
+            "YDLSD"
+        );
 
         // minting some _pool tokens for testing
         _balLSD.mint(address(this), 100e18);
@@ -125,6 +139,14 @@ contract MasterPoolTest is Test {
         assertEq(amount1, depositAmount);
         // check new shares
         assertEq(_pool.balanceOf(address(this)), depositAmount);
+
+        // accounting functions tests
+        assertEq(_pool.totalAssets(), depositAmount * 6);
+        assertEq(_pool.sharesToAssets(shares), depositAmount * 6);
+        uint256[] memory _assets = _pool.sharesToUnderlyingAssets(shares);
+        assertEq(_assets[0], (depositAmount * 3) / 2); // 25% _wsteth
+        assertEq(_assets[1], (depositAmount * 3) / 2); // 25% _reth
+        assertEq(_assets[2], depositAmount * 3); // 50% _sfrxeth
     }
 
     function testRemoveliquidity() public {

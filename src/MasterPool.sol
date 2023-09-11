@@ -3,6 +3,8 @@ pragma solidity ^0.8.0;
 
 import {ERC20} from "solmate/tokens/ERC20.sol";
 
+import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
+
 import {IMasterPool} from "./IMasterPool.sol";
 
 // This is a mashup between solmate ERC4626 and uniswap v2
@@ -13,22 +15,29 @@ contract MasterPool is IMasterPool, ERC20 {
                             IMMUTABLES
     //////////////////////////////////////////////////////////////*/
 
-    ERC20 public immutable asset0;
-    ERC20 public immutable asset1;
+    IERC20 public immutable asset0;
+    IERC20 public immutable asset1;
 
     uint256 public reserve0;
     uint256 public reserve1;
 
     // name and symbol are of the pool itself ex: YieldDogLSD YDLSD
     constructor(
-        ERC20 asset0_,
-        ERC20 asset1_,
+        IERC20 asset0_,
+        IERC20 asset1_,
         string memory name_,
         string memory symbol_
     ) ERC20(name_, symbol_, 18) {
         asset0 = asset0_;
         asset1 = asset1_;
     }
+
+    // eth mainnet wsteth
+    IERC20 public wsteth = IERC20(0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0);
+    // eth mainnet reth
+    IERC20 public reth = IERC20(0xae78736Cd615f374D3085123A210448E74Fc6393);
+    // eth mainnet sfrxeth
+    IERC20 public sfrxeth = IERC20(0xac3E018457B222d93114458476f3E3416Abbe38F);
 
     /*//////////////////////////////////////////////////////////////
                         ADD/REMOVE LIQUIDITY
@@ -150,8 +159,26 @@ contract MasterPool is IMasterPool, ERC20 {
         reserve1 = asset1.balanceOf(address(this));
     }
 
-    function totalAssets() public view override returns (uint256 assets) {
+    function totalAssets() public view returns (uint256 assets) {
         (uint256 reserve0_, uint256 reserve1_) = totalReserves();
-        return reserve0_ + reserve1_;
+        // each LP token is 1:3 with underlying weth eq. asset
+        return (reserve0_ + reserve1_) * 3;
+    }
+
+    function sharesToAssets(
+        uint256 shares
+    ) public pure returns (uint256 assets) {
+        // each share is worth 1 of each LP (2 lps in total)
+        // each LP token is 1:3 with underlying weth eq. asset
+        return shares * 6;
+    }
+
+    function sharesToUnderlyingAssets(
+        uint256 shares
+    ) public pure returns (uint256[] memory assets) {
+        assets = new uint256[](3); // Initialize the array with a size of 3
+        assets[0] = (shares * 3) / 2; // 25% _wsteth
+        assets[1] = (shares * 3) / 2; // 25% _reth
+        assets[2] = shares * 3; // 50% _sfrxeth
     }
 }
