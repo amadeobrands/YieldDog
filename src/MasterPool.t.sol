@@ -15,17 +15,17 @@ contract MasterPoolTest is IMasterPool, Test {
     // Pool to be tested
     MasterPool internal _pool;
     // All the usefull tokens
-    MockERC20 internal _wsteth;
-    MockERC20 internal _reth;
-    MockERC20 internal _sfrxeth;
+    // MockERC20 internal _wsteth;
+    // MockERC20 internal _reth;
+    // MockERC20 internal _sfrxeth;
     // Pools we gonna build on top of
     MockERC20 internal _balLSD;
     MockERC20 internal _crvLSD;
 
     function setUp() public {
-        _wsteth = new MockERC20("Wrapped Staked Ether", "WSTETH", 18);
-        _reth = new MockERC20("Rocket Pool ETH", "RETH", 18);
-        _sfrxeth = new MockERC20("Staked FRAX ETH", "SFRXETH", 18);
+        // _wsteth = new MockERC20("Wrapped Staked Ether", "WSTETH", 18);
+        // _reth = new MockERC20("Rocket Pool ETH", "RETH", 18);
+        // _sfrxeth = new MockERC20("Staked FRAX ETH", "SFRXETH", 18);
 
         _balLSD = new MockERC20("Balancer LSD", "BAL-LSD", 18);
         _crvLSD = new MockERC20("Curve LSD", "CRV-LSD", 18);
