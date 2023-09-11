@@ -13,7 +13,7 @@ MasterPool:
 [x] Swap
 
 Scripts:
-[ ] Local env ready for front end dev
-[ ] MasterPool deployer
-[ ] Gateway deployer
-[ ] Script to get CRV/BAL tokens into the Gateway
+[x] Local env ready for front end dev
+[x] MasterPool deployer
+[x] Gateway deployer
+[x] Script to get CRV/BAL tokens into the Gateway
