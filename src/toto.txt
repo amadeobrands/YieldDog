@@ -14,3 +14,7 @@ MasterPool:
 [x] RemoveLiquidity()
 [x] Swap
 
+Scripts:
+[ ] MasterPool deployer
+[ ] Gateway deployer
+[ ] Script to get CRV/BAL tokens into the Gateway

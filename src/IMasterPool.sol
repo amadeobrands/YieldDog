@@ -1,11 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ERC20} from "solmate/tokens/ERC20.sol";
-
-// This is a mashup between solmate ERC4626 and uniswap v2
-// https://github.com/transmissions11/solmate/blob/main/src/mixins/ERC4626.sol
-// https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol
 interface IMasterPool {
     /*//////////////////////////////////////////////////////////////
                                 EVENTS
