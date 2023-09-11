@@ -6,8 +6,6 @@ import {IMasterPool} from "./IMasterPool.sol";
 
 import {IGateway} from "./IGateway.sol";
 
-import "forge-std/console.sol";
-
 contract Gateway is IGateway {
     /*//////////////////////////////////////////////////////////////
                             IMMUTABLES
