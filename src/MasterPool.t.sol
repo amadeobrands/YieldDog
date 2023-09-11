@@ -13,50 +13,50 @@ import "forge-std/console.sol";
 
 contract MasterPoolTest is IMasterPool, Test {
     // Pool to be tested
-    MasterPool pool;
+    MasterPool internal _pool;
     // All the usefull tokens
-    MockERC20 wsteth;
-    MockERC20 reth;
-    MockERC20 sfrxeth;
+    MockERC20 internal _wsteth;
+    MockERC20 internal _reth;
+    MockERC20 internal _sfrxeth;
     // Pools we gonna build on top of
-    MockERC20 balLSD;
-    MockERC20 crvLSD;
+    MockERC20 internal _balLSD;
+    MockERC20 internal _crvLSD;
 
     function setUp() public {
-        wsteth = new MockERC20("Wrapped Staked Ether", "WSTETH", 18);
-        reth = new MockERC20("Rocket Pool ETH", "RETH", 18);
-        sfrxeth = new MockERC20("Staked FRAX ETH", "SFRXETH", 18);
+        _wsteth = new MockERC20("Wrapped Staked Ether", "WSTETH", 18);
+        _reth = new MockERC20("Rocket Pool ETH", "RETH", 18);
+        _sfrxeth = new MockERC20("Staked FRAX ETH", "SFRXETH", 18);
 
-        balLSD = new MockERC20("Balancer LSD", "BAL-LSD", 18);
-        crvLSD = new MockERC20("Curve LSD", "CRV-LSD", 18);
+        _balLSD = new MockERC20("Balancer LSD", "BAL-LSD", 18);
+        _crvLSD = new MockERC20("Curve LSD", "CRV-LSD", 18);
 
-        pool = new MasterPool(balLSD, crvLSD, "YieldDogLSD", "YDLSD");
+        _pool = new MasterPool(_balLSD, _crvLSD, "YieldDogLSD", "YDLSD");
 
-        // minting some pool tokens for testing
-        balLSD.mint(address(this), 100e18);
-        crvLSD.mint(address(this), 100e18);
+        // minting some _pool tokens for testing
+        _balLSD.mint(address(this), 100e18);
+        _crvLSD.mint(address(this), 100e18);
     }
 
     function testInit() public {
-        assertEq(pool.name(), "YieldDogLSD");
-        assertEq(pool.symbol(), "YDLSD");
-        assertEq(pool.decimals(), 18);
+        assertEq(_pool.name(), "YieldDogLSD");
+        assertEq(_pool.symbol(), "YDLSD");
+        assertEq(_pool.decimals(), 18);
     }
 
     function testAddliquidity() public {
         uint256 amount0 = 0;
         uint256 amount1 = 0;
         uint256 depositAmount = 1e18;
-        // approving the pools tokens first
-        balLSD.approve(address(pool), depositAmount);
-        crvLSD.approve(address(pool), depositAmount);
+        // approving the _pools tokens first
+        _balLSD.approve(address(_pool), depositAmount);
+        _crvLSD.approve(address(_pool), depositAmount);
 
         // check current liquidity
-        (amount0, amount1) = pool.totalReserves();
+        (amount0, amount1) = _pool.totalReserves();
         assertEq(amount0, 0);
         assertEq(amount1, 0);
         // check current shares
-        assertEq(pool.balanceOf(address(this)), 0);
+        assertEq(_pool.balanceOf(address(this)), 0);
 
         // check event
         // Now checking the event
@@ -69,7 +69,7 @@ contract MasterPoolTest is IMasterPool, Test {
         //     bool checkData,
         //     address emitter
         // ) external;
-        vm.expectEmit(true, true, false, true, address(pool));
+        vm.expectEmit(true, true, false, true, address(_pool));
         // We emit the event we expect to see.
         emit AddLiquidity(
             address(this),
@@ -79,7 +79,7 @@ contract MasterPoolTest is IMasterPool, Test {
             depositAmount // shares
         );
         // adding liquidity
-        uint256 shares = pool.addLiquidity(
+        uint256 shares = _pool.addLiquidity(
             depositAmount,
             depositAmount,
             address(this)
@@ -88,28 +88,28 @@ contract MasterPoolTest is IMasterPool, Test {
         assertEq(shares, depositAmount);
 
         // check new liquidity
-        (amount0, amount1) = pool.totalReserves();
+        (amount0, amount1) = _pool.totalReserves();
         assertEq(amount0, depositAmount);
         assertEq(amount1, depositAmount);
         // check new shares
-        assertEq(pool.balanceOf(address(this)), depositAmount);
+        assertEq(_pool.balanceOf(address(this)), depositAmount);
     }
 
     function testRemoveliquidity() public {
         uint256 amount0 = 0;
         uint256 amount1 = 0;
         uint256 depositAmount = 1e18;
-        // approving the pools tokens first
-        balLSD.approve(address(pool), depositAmount);
-        crvLSD.approve(address(pool), depositAmount);
+        // approving the _pools tokens first
+        _balLSD.approve(address(_pool), depositAmount);
+        _crvLSD.approve(address(_pool), depositAmount);
         // adding liquidity
-        uint256 shares = pool.addLiquidity(
+        uint256 shares = _pool.addLiquidity(
             depositAmount,
             depositAmount,
             address(this)
         );
 
-        vm.expectEmit(true, true, false, true, address(pool));
+        vm.expectEmit(true, true, false, true, address(_pool));
         // We emit the event we expect to see.
         emit RemoveLiquidity(
             address(this),
@@ -119,36 +119,36 @@ contract MasterPoolTest is IMasterPool, Test {
             depositAmount // shares
         );
         // removing liquidity
-        (amount0, amount1) = pool.removeLiquidity(shares, address(this));
+        (amount0, amount1) = _pool.removeLiquidity(shares, address(this));
         // check returned tokens
         assertEq(amount0, depositAmount);
         assertEq(amount1, depositAmount);
 
         // check new liquidity
-        (amount0, amount1) = pool.totalReserves();
+        (amount0, amount1) = _pool.totalReserves();
         assertEq(amount0, 0);
         assertEq(amount1, 0);
         // check new shares
-        assertEq(pool.balanceOf(address(this)), 0);
+        assertEq(_pool.balanceOf(address(this)), 0);
     }
 
     function testSwap() public {
         uint256 depositAmount = 10e18;
         uint256 swapAmount = 1e18;
-        // approving the pools tokens first
-        balLSD.approve(address(pool), depositAmount);
-        crvLSD.approve(address(pool), depositAmount);
+        // approving the _pools tokens first
+        _balLSD.approve(address(_pool), depositAmount);
+        _crvLSD.approve(address(_pool), depositAmount);
         // adding liquidity
-        pool.addLiquidity(depositAmount, depositAmount, address(this));
+        _pool.addLiquidity(depositAmount, depositAmount, address(this));
 
         // check my current balance
-        assertEq(balLSD.balanceOf(address(this)), 90e18);
-        assertEq(crvLSD.balanceOf(address(this)), 90e18);
+        assertEq(_balLSD.balanceOf(address(this)), 90e18);
+        assertEq(_crvLSD.balanceOf(address(this)), 90e18);
 
         // approve before swap
-        balLSD.approve(address(pool), swapAmount);
+        _balLSD.approve(address(_pool), swapAmount);
         // event debugging
-        vm.expectEmit(true, true, false, true, address(pool));
+        vm.expectEmit(true, true, false, true, address(_pool));
         // We emit the event we expect to see.
         emit Swap(
             address(this),
@@ -159,10 +159,10 @@ contract MasterPoolTest is IMasterPool, Test {
             swapAmount // amount1Out
         );
 
-        pool.swap(swapAmount, 0, address(this));
+        _pool.swap(swapAmount, 0, address(this));
 
         // check my current balance
-        assertEq(balLSD.balanceOf(address(this)), 89e18);
-        assertEq(crvLSD.balanceOf(address(this)), 91e18);
+        assertEq(_balLSD.balanceOf(address(this)), 89e18);
+        assertEq(_crvLSD.balanceOf(address(this)), 91e18);
     }
 }
