@@ -1,6 +1,6 @@
 Gateway:
-[ ] Deposit()
-[ ] Redeem() (withdraw)
+[x] Deposit()
+[x] Redeem() (withdraw)
 [ ] TotalAssets() (AUM priced in weth)
 [ ] sharesToAssets() (MY assets, priced in weth)
 [ ] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
@@ -13,6 +13,7 @@ MasterPool:
 [x] Swap
 
 Scripts:
+[ ] Local env ready for front end dev
 [ ] MasterPool deployer
 [ ] Gateway deployer
 [ ] Script to get CRV/BAL tokens into the Gateway
