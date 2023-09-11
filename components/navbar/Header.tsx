@@ -33,7 +33,7 @@ const Header = () => {
     'px-6 lg:px-10 py-3 flex items-center justify-between',
     {
       'bg-background/90 backdrop-blur-sm border-b-2 border-muted/20': isScrolled,
-      'bg-background dark:bg-background': !isScrolled,
+      'bg-background': !isScrolled,
     }
   )
 
@@ -41,15 +41,11 @@ const Header = () => {
     <header className={classes}>
       {/* Mobile menu container set to hide on screens wider than 1024px */}
       <section className='flex justify-between'>
-        <div className='flex gap-4 lg:hidden'>
-          <Link href='/'>
-            <Image alt='logo' className='w-36' src={logoLight} />
-          </Link>
-        </div>
+        <Link href='/'>
+          <Image alt='logo' className='w-48' src={logoLight} />
+        </Link>
       </section>
-      <div className='lg:flex lg:gap-4 lg:items-center'>
-        <WalletConnect />
-      </div>
+      <WalletConnect />
     </header>
   )
 } 
