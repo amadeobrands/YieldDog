@@ -1,6 +1,12 @@
 # YieldDog
 Fetch the highest LSD yield
 
+## Introduction
+
+[TODO]
+
+# Technical documentation
+
 ## Getting Started
 
 First, run the development server:
@@ -15,21 +21,28 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Smart Contract walkthrough
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## MasterPool
 
-## Learn More
+The "MasterPool" is a smart contract that functions as a liquidity pool. Here's a detailed breakdown:
 
-To learn more about Next.js, take a look at the following resources:
+AddLiquidity(): Enables users to add assets to the liquidity pool, which can then be used for trading or earning rewards. This process usually involves depositing a pair of tokens to maintain the balance in the pool.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+RemoveLiquidity(): Lets users remove their assets from the liquidity pool, often in the form of tokens and their respective trading pairs. This action might be subject to fees or penalties, depending on the pool's design.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Swap: Allows users to trade tokens by leveraging the liquidity provided in the pool. For instance, a user can swap Token A for Token B, subject to available liquidity and potential price slippage.
 
-## Deploy on Vercel
+## Gateway
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The "Gateway" is a smart contract that offers a suite of financial functionalities to users. Here's a breakdown:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Deposit(): Enables users to deposit ETH into the contract in return for the master pool LP tokens
+
+Redeem(): Allows users to withdraw their ETH from the contract.
+
+TotalAssets(): Provides the total assets under management (AUM) of the contract, denominated in Wrapped Ether (weth).
+
+sharesToAssets(): Computes the value of a user's assets within the contract, priced in Wrapped Ether (weth).
+
+sharesToUnderlyingAssets(): Gives the value of a user's assets but priced in various Ethereum-based assets such as wsteth, reth, and sfrxeth. This function helps users understand their holdings' composition and value in different underlying assets.
