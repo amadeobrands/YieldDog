@@ -149,4 +149,9 @@ contract MasterPool is IMasterPool, ERC20 {
         reserve0 = asset0.balanceOf(address(this));
         reserve1 = asset1.balanceOf(address(this));
     }
+
+    function totalAssets() public view override returns (uint256 assets) {
+        (uint256 reserve0_, uint256 reserve1_) = totalReserves();
+        return reserve0_ + reserve1_;
+    }
 }

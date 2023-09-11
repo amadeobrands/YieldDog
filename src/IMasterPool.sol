@@ -50,4 +50,6 @@ interface IMasterPool {
         address receiver,
         address owner
     ) external returns (uint256 amount0, uint256 amount1);
+
+    function totalAssets() external returns (uint256 assets);
 }

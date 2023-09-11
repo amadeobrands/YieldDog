@@ -59,4 +59,9 @@ contract Gateway is IGateway {
     /*//////////////////////////////////////////////////////////////
                         ACCOUNTING LOGIC
     //////////////////////////////////////////////////////////////*/
+
+    function totalAssets() public returns (uint256 assets) {
+        // each LP token is 1:3 with underlying weth eq. asset
+        return ydLSD.totalAssets() * 3;
+    }
 }

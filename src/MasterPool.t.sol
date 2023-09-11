@@ -5,25 +5,44 @@ import {Test} from "forge-std/Test.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 
 import {MasterPool} from "./MasterPool.sol";
-import {IMasterPool} from "./IMasterPool.sol";
 
 import {MockERC20} from "./MockERC20.sol";
 
 import "forge-std/console.sol";
 
-contract MasterPoolTest is IMasterPool, Test {
-    // monkey patch for the interface
-    function addLiquidity(
+contract MasterPoolTest is Test {
+    // caller: tokens IN from
+    // receiver: shares OUT to
+    event AddLiquidity(
+        address indexed caller,
+        address indexed receiver,
         uint256 amount0,
         uint256 amount1,
-        address receiver
-    ) external override returns (uint256 shares) {}
+        uint256 shares
+    );
 
-    function removeLiquidity(
-        uint256 shares,
-        address receiver,
-        address owner
-    ) external override returns (uint256 amount0, uint256 amount1) {}
+    // caller: caller of the function (can be anyone)
+    // receiver: tokens OUT to
+    // owner: shares IN from
+    event RemoveLiquidity(
+        address indexed caller,
+        address indexed receiver,
+        address indexed owner,
+        uint256 amount0,
+        uint256 amount1,
+        uint256 shares
+    );
+
+    // caller: tokens X IN from
+    // receiver: tokens Y OUT to
+    event Swap(
+        address indexed caller,
+        address indexed receiver,
+        uint256 amount0In,
+        uint256 amount1In,
+        uint256 amount0Out,
+        uint256 amount1Out
+    );
 
     // Pool to be tested
     MasterPool internal _pool;
