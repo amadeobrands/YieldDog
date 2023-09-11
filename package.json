@@ -9,8 +9,11 @@
     "lint": "next lint",
     "test": "source .env && forge test --fork-url $MAINNET_RPC_URL --fork-block-number $FORK_BLOCK_NUMBER",
     "test:watch": "source .env && forge test --fork-url $MAINNET_RPC_URL --fork-block-number $FORK_BLOCK_NUMBER -vvv --watch",
+    "anvil-mainnet": "source .env && anvil --fork-url $MAINNET_RPC_URL --fork-block-number $FORK_BLOCK_NUMBER",
     "deploy:local": "source .env && forge script Deploy --broadcast --rpc-url \"$FOUNDRY\"",
-    "anvil-mainnet": "source .env && anvil --fork-url $MAINNET_RPC_URL --fork-block-number $FORK_BLOCK_NUMBER"
+    "deploy:sepolia": "source .env && forge script Deploy --broadcast --rpc-url \"$SEPOLIA_RPC_URL\" --private-key=$PRIVATE_KEY --verify --chain 11155111 --watch",
+    "deploy:taiko": "source .env && forge script Deploy --rpc-url \"$TAIKO\" --private-key=$PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url https://explorer.test.taiko.xyz/api?",
+    "deploy:linea-goerli": "source .env && forge script Deploy --broadcast --rpc-url \"$LINEA_RPC_URL\" --private-key=$PRIVATE_KEY"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
