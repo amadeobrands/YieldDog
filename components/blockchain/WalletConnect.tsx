@@ -27,8 +27,6 @@ export const WalletConnect = ({
   return (
     <ConnectButton.Custom>
       {({account, chain, openChainModal, openConnectModal, authenticationStatus }) => {
-        // console.log('Rainboaw Account data ->', account)
-        // console.log('Rainbow Account chain info ->', chain)
         const connected = account && chain && (!authenticationStatus || authenticationStatus === 'authenticated')
 
         return (
@@ -48,15 +46,15 @@ export const WalletConnect = ({
                 )
               }
 
-              if (chain.id !== 1) {
-                return (
-                  <Button className={classNameWrongNetwork} onClick={openChainModal} type="button">
-                    <span className="text-xs font-bold leading-none p-2 inline-block">
-                      {labelWrongNetwork}
-                    </span>
-                  </Button>
-                )
-              }
+              // if (chain.id) {
+              //   return (
+              //     <Button className={classNameWrongNetwork} onClick={openChainModal} type="button">
+              //       <span className="text-xs font-bold leading-none p-2 inline-block">
+              //         {labelWrongNetwork}
+              //       </span>
+              //     </Button>
+              //   )
+              // }
 
               return (
                 <div className='flex items-center gap-4'>
@@ -80,7 +78,7 @@ export const WalletConnect = ({
                         )}
                       </div>
                     )}
-                    {/* <span className="hidden md:uppercase md:whitespace-nowrap md:text-xs md:font-bold tracking-wider leading-none md:p-2 md:block">{chain.name}</span> */}
+                    <span className="hidden md:uppercase md:whitespace-nowrap md:text-xs md:font-bold tracking-wider leading-none md:p-2 md:block">{chain.name}</span>
                     <ChevronDown />
                   </Button>
                   <Button 
