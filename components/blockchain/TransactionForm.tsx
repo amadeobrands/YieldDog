@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 // UI Components
 import { Input } from '@/components/ui/input'
@@ -12,13 +12,29 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-
 // icons
 import { ArrowDown, Settings, Loader2, Info } from 'lucide-react'
+
+// Web3 hooks + utils
+import { useAccount, useBalance, useFeeData } from 'wagmi'
+import { Deposit } from '@/components/blockchain/Deposit'
+import { Withdraw } from '@/components/blockchain/Withdraw'
+import { useDebounce } from 'use-debounce'
+import { parseEther } from 'viem'
+
+
+// Helper functions
+import { formatBigNumber } from '@lib/utils/format.bigNumber'
+
+
 const TransactionForm = () => {
 
   const [ transferState, setTransferState ] = useState<string>('deposit')
-  const [amount, setAmount] = useState<string>('')
+  const [ amount, setAmount ] = useState<string>('')
+  const [ debouncedAmount ] = useDebounce(amount, 500)
+  const [ sendAmountBigNum ,setSendAmountBigNum ] = useState<(string | number | bigint | undefined)>()
+  const [ baseFee, setBaseFee ] = useState<string>('')
+  const [ transactionFees, setTransactionFees ] = useState('')
 
 
   const handleTabChange: React.MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -26,13 +42,64 @@ const TransactionForm = () => {
     setTransferState(event.currentTarget.dataset.value as any)
   }
 
-  const onApproveSpending = () => {
-    if (transferState === 'deposit') {
-      console.log('Approved')
-      // writeApproveETH?.()
+
+  // ! ---------------Web3 user wallet hooks---------------
+  // Account state - fetches users wallet address
+  const { address: accountAddress } = useAccount()
+
+  // User token balances
+  const {data: balanceInfo } = useBalance({
+    address: accountAddress,
+  })
+
+  // Fetches Gas fee data
+  const { data: dataGasFee, isError: isErrorGasFee, isLoading: isLoadingGasFee } = useFeeData({
+    watch: true,
+  })
+
+
+  // Check input values are valid and parse to Ether
+  useMemo(() => {
+    const isValid = /^[0-9.]+$/.test(debouncedAmount)
+      if (!isValid) {
+        return 0
+      } else {
+        setSendAmountBigNum(Number(parseEther(debouncedAmount))) 
+      }
+  }, [debouncedAmount])
+
+  useMemo(() => {
+    if (sendAmountBigNum) {
+      const baseFeeCalc = Number(sendAmountBigNum) * 0.002
+      const formattedFee = formatBigNumber(BigInt(baseFeeCalc))
+      setBaseFee(formattedFee)
+    }
+  }, [sendAmountBigNum])
+
+  useMemo(() => {
+    if (baseFee && dataGasFee?.gasPrice) {
+      const calc = dataGasFee.gasPrice
+      const formatedAmount = formatBigNumber(calc)
+      console.log('TotalFee,', formatBigNumber(calc))
+      console.log('TotalFee,', calc)
+      setTransactionFees(formatedAmount)
+    }
+  },[baseFee, dataGasFee])
+
+
+  useEffect(() => {
+    console.log('sendAmountBigNum ->', typeof sendAmountBigNum)
+    // if (dataGasFee) console.log('Gas fee ->', formatBigNumber(dataGasFee?.gasPrice))
+
+    if (sendAmountBigNum) console.log('base fee ->',  baseFee)
+
+  }, [baseFee])
+
+  const handleMaxAmount = () => {
+    if (balanceInfo?.value) {
+      setAmount(formatBigNumber(balanceInfo?.value))
     }
   }
-
 
   return (
     <form
@@ -67,13 +134,12 @@ const TransactionForm = () => {
 
           </div>
           <div className='flex justify-between items-center w-full mt-2'>
-            <p>23.23432</p>
-            {/* <p className='text-sm'>{!ethBalance.data?.value ? 
+            <p className='text-sm'>{!balanceInfo || balanceInfo.value === undefined ? 
               '--'
               : 
-              formatToNormalizedAmount(ethBalance.data?.value)}
-            </p> */}
-            {/* <p onClick={() => maxAmount(0)} className='underline underline-offset-2 text-primary/70 hover:cursor-pointer ml-3'>Max</p> */}
+              formatBigNumber(balanceInfo?.value)}
+            </p>
+            <p onClick={handleMaxAmount} className='underline underline-offset-2 text-primary/70 hover:cursor-pointer ml-3'>Max</p>
           </div>
         </div>
         <div className='flex justify-center my-4'>
@@ -112,11 +178,17 @@ const TransactionForm = () => {
                 <TooltipContent>
                   <div className='mb-2'>
                     <h6 className='text-primary'>Gas Fee</h6>
-                    <p className='ml-2 text-sm text-muted'>0.0000123</p>
+                    {isLoadingGasFee ? 
+                    <Loader2 className="h-4 w-4 animate-spin" />  
+                    : 
+                    (dataGasFee && dataGasFee.gasPrice !== null && dataGasFee.gasPrice !== undefined) 
+                      ? formatBigNumber(dataGasFee.gasPrice) 
+                      : '--'
+                    }
                   </div>
                   <div className='mb-2'>
                     <h6 className='text-primary'>Base Fee</h6>
-                    <p className='ml-2 text-sm text-muted'>0.0000123</p>
+                    <p className='ml-2 text-sm text-muted'>{baseFee? baseFee : '--'}</p>
                   </div>
                   <div className='mb-2'>
                     <h6 className='text-primary'>Slippage</h6>
@@ -126,9 +198,7 @@ const TransactionForm = () => {
               </Tooltip>
             </TooltipProvider>
           </div>
-
-          <p>0.0000123</p>
-          {/* <p>{gasFeeData.data?.gasPrice ? formatEther(gasFeeData.data?.gasPrice) : '0'}</p> */}
+          <p>{transactionFees ? transactionFees : '--'}</p>
         </div>
         <div className='flex justify-between items-center my-3 text-sm'>
           <p>Fee settings</p>
@@ -136,24 +206,12 @@ const TransactionForm = () => {
           {/* <p>{gasFeeData.data?.gasPrice ? formatEther(gasFeeData.data?.gasPrice) : '0'}</p> */}
         </div>
       </div>
-      <div className='flex flex-col items-center justify-center w-full'>
-        <Button 
-          className='my-2 text-xl font-bold w-full' 
-          // disabled={loadingETH  || !amount.some(value => Number(value) > 0) || true}
-          onClick={() => onApproveSpending()}
-          >
-            Approve
-          {/* {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Approve'} */}
-        </Button>
-        <Button 
-          className='my-2 text-xl font-bold w-full' 
-          // disabled={loadingETH  || !amount.some(value => Number(value) > 0) || true}
-          onClick={() => onApproveSpending()}
-          >
-            Deposit
-          {/* {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Approve'} */}
-        </Button>
-      </div>
+      {transferState === 'deposit' ?
+        <Deposit amountToTransfer={sendAmountBigNum} />
+        :
+        <Withdraw />
+    }
+      
     </form>
   )
 }
