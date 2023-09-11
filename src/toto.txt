@@ -1,9 +1,9 @@
 Gateway:
 [x] Deposit()
 [x] Redeem() (withdraw)
-[ ] TotalAssets() (AUM priced in weth)
-[ ] sharesToAssets() (MY assets, priced in weth)
-[ ] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
+[x] TotalAssets() (AUM priced in weth)
+[x] sharesToAssets() (MY assets, priced in weth)
+[x] sharesToUnderlyingAssets() (MY assets, priced in wsteth/reth/sfrxeth)
 
 MasterPool:
 [x] constructor
