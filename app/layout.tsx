@@ -3,10 +3,10 @@ import type { Metadata } from 'next'
 import { Arimo } from 'next/font/google'
 
 import Header from '@/components/navbar/Header'
-import { RainbowKit } from '@/components/providers/RainbowKit'
+import RootProvider from '@/components/providers/RootProvider'
 
 
-const inter = Arimo({ subsets: ['latin'] })
+const arimo = Arimo({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Yield Dog',
@@ -20,13 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <RainbowKit>
+      <body className={arimo.className}>
+        <RootProvider>
           <Header />
-          <div className='flex flex-col min-h-screen'>
-            {children}
-          </div> 
-        </RainbowKit>
+            {children} 
+        </RootProvider>
       </body>
     </html>
   )
