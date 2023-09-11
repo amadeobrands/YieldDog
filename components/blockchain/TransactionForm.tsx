@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useMemo } from 'react'
+import Image from 'next/image'
 
 // UI Components
 import { Input } from '@/components/ui/input'
@@ -15,18 +16,41 @@ import {
 import { ArrowDown, Settings, Loader2, Info } from 'lucide-react'
 
 // Web3 hooks + utils
-import { useAccount, useBalance, useFeeData } from 'wagmi'
+import { useAccount, useBalance, useFeeData, useContractRead } from 'wagmi'
 import { Deposit } from '@/components/blockchain/Deposit'
 import { Withdraw } from '@/components/blockchain/Withdraw'
 import { useDebounce } from 'use-debounce'
 import { parseEther } from 'viem'
 
-
 // Helper functions
 import { formatBigNumber } from '@/lib/utils/format.bigNumber'
 
+// Abi's
+import gatewayAbi from '../../abi/Gateway.json'
+import masterPoolAbi from '../../abi/masterPool.json'
+
+// Images
+import ethIcon from '@/public/logos/eth-icon.svg'
+import ydIcon from '@/public/YDicon.png'
+
+interface UseContractReadResult {
+  data: bigint;
+  error: any;
+}
+
 
 const TransactionForm = () => {
+
+  // ! Contracts
+  const gatewayContract = {
+    address: '0xde79380FBd39e08150adAA5C6c9dE3146f53029e',
+    abi: gatewayAbi.abi as any
+  } as const
+
+  const masterPoolContract = {
+    address: '0x04f1A5b9BD82a5020C49975ceAd160E98d8B77Af',
+    abi: masterPoolAbi.abi as any
+  } as const
 
   const [ transferState, setTransferState ] = useState<string>('deposit')
   const [ amount, setAmount ] = useState<string>('')
@@ -49,6 +73,7 @@ const TransactionForm = () => {
   // User token balances
   const {data: balanceInfo } = useBalance({
     address: accountAddress,
+    watch: true,
   })
 
   // Fetches Gas fee data
@@ -85,9 +110,19 @@ const TransactionForm = () => {
     }
   },[baseFee, dataGasFee])
 
+   // Masterpool read balance
+  const { data: masterPoolBalance, error: masterPoolError } = useContractRead({
+    address: masterPoolContract.address,
+    abi: masterPoolContract.abi,
+    functionName: 'balanceOf',
+    args: [accountAddress ? accountAddress : ''],
+    watch: true,
+  }) as UseContractReadResult
+
+
 
   useEffect(() => {
-    console.log('sendAmountBigNum ->', typeof sendAmountBigNum)
+    console.log('masterPoolBalance ->', typeof masterPoolBalance)
     // if (dataGasFee) console.log('Gas fee ->', formatBigNumber(dataGasFee?.gasPrice))
 
     if (sendAmountBigNum) console.log('base fee ->',  baseFee)
@@ -102,7 +137,7 @@ const TransactionForm = () => {
 
   return (
     <form
-      className='border-2 border-border rounded-xl m-3 p-4 mx-auto md:w-full'
+      className='border-2 border-border/30 rounded-xl m-3 p-4 mx-auto md:w-full'
       onSubmit={(e) => {
         e.preventDefault()
       }}
@@ -112,7 +147,6 @@ const TransactionForm = () => {
           <TabsList className='w-full'>
             <TabsTrigger className='w-full' onClick={handleTabChange} value="deposit" data-value="deposit">Deposit</TabsTrigger>
             <TabsTrigger className='w-full' onClick={handleTabChange}  value="withdraw" data-value="withdraw">Withdraw</TabsTrigger>
-            <TabsTrigger className='w-full' onClick={handleTabChange}  value="swap" data-value="swap">Swap</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -127,18 +161,34 @@ const TransactionForm = () => {
             value={amount} 
           />
           <div className='flex items-center gap-1 border border-primary/70 rounded-xl p-2 shrink-0'>
-            {/* <Image alt='icon' src={props.tokens[0].icon} className='inline-block align-middle mr-1' height={20} width={20} /> */}
-            <label className='px-1' htmlFor="amount">ETH</label>
+            {transferState === 'deposit' ?
+                <div>
+                  <Image alt='icon' src={ethIcon} className='inline-block align-middle mr-1' height={18} width={18} />
+                  <label className='px-1' htmlFor="amount">ETH</label>
+                </div>
+                :
+                <div>
+                  <Image alt='icon' src={ydIcon} className='inline-block align-middle mr-1' height={18} width={18} />
+                  <label className='px-1' htmlFor="amount">MaxETH</label>
+                </div>
+            }
           </div>
 
           </div>
           <div className='flex justify-between items-center w-full mt-2'>
-            <p className='text-sm'>{!balanceInfo || balanceInfo.value === undefined ? 
-              '--'
-              : 
-              formatBigNumber(balanceInfo?.value)}
-            </p>
-            <p onClick={handleMaxAmount} className='underline underline-offset-2 text-primary/70 hover:cursor-pointer ml-3'>Max</p>
+            {transferState === 'deposit' ?
+              <p className='text-sm'>{!balanceInfo || balanceInfo.value === undefined ? 
+                '--'
+                : 
+                formatBigNumber(balanceInfo?.value)} avail
+              </p>
+              :
+              <p className='text-sm'>{!masterPoolBalance ? 
+                '--'
+                : 
+                formatBigNumber(masterPoolBalance)} avail
+              </p>
+            }
           </div>
         </div>
         <div className='flex justify-center my-4'>
@@ -151,21 +201,36 @@ const TransactionForm = () => {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.05"
               className='md:placeholder:text-xl text-xl bg-card'
-              value={amount} 
+              value={transferState === 'deposit' ? Number(amount)/6 : Number(amount)*6} 
             />
             <div className='flex items-center gap-1 border border-primary/70 rounded-xl p-2 shrink-0'>
-              {/* <Image alt='icon' src={props.tokens[0].icon} className='inline-block align-middle mr-1' height={20} width={20} /> */}
-              <label className='px-1' htmlFor="amount">MaxETH</label>
+              {transferState === 'deposit' ?
+                <div>
+                  <Image alt='icon' src={ydIcon} className='inline-block align-middle mr-1' height={18} width={18} />
+                  <label className='px-1' htmlFor="amount">MaxETH</label>
+                </div>
+                :
+                <div>
+                  <Image alt='icon' src={ethIcon} className='inline-block align-middle mr-1' height={18} width={18} />
+                  <label className='px-1' htmlFor="amount">ETH</label>
+                </div>
+            }
             </div>
           </div>
-          <div className='flex justify-between items-center w-full mt-2'>
-            <p>0</p>
-            {/* <p className='text-sm'>{!ethBalance.data?.value ? 
+          <div className='flex items-center w-full mt-2'>
+            {transferState === 'deposit' ?
+            <p className='text-sm'>{!masterPoolBalance ? 
               '--'
               : 
-              formatToNormalizedAmount(ethBalance.data?.value)}
-            </p> */}
-            {/* <p onClick={() => maxAmount(0)} className='underline underline-offset-2 text-primary/70 hover:cursor-pointer ml-3'>Max</p> */}
+              formatBigNumber(masterPoolBalance)} avail
+            </p>
+            :
+            <p className='text-sm'>{!balanceInfo || balanceInfo.value === undefined ? 
+              '--'
+              : 
+              formatBigNumber(balanceInfo?.value)} avail
+            </p>
+            }
           </div>
         </div>
         <div className='flex justify-between items-center my-3 text-sm'>
@@ -202,13 +267,12 @@ const TransactionForm = () => {
         <div className='flex justify-between items-center my-3 text-sm'>
           <p>Fee settings</p>
           <Settings />
-          {/* <p>{gasFeeData.data?.gasPrice ? formatEther(gasFeeData.data?.gasPrice) : '0'}</p> */}
         </div>
       </div>
       {transferState === 'deposit' ?
-        <Deposit amountToTransfer={sendAmountBigNum} />
+        <Deposit amountToTransfer={sendAmountBigNum} account={accountAddress} />
         :
-        <Withdraw />
+        <Withdraw  amountToTransfer={sendAmountBigNum} account={accountAddress} />
     }
       
     </form>
