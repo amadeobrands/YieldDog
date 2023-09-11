@@ -1,13 +1,13 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 // Networks
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-import { arbitrum, goerli, hardhat, mainnet, sepolia } from '@wagmi/core/chains'
+import { mantle, linea, mainnet, sepolia, taikoTestnetSepolia } from '@wagmi/core/chains'
 import { configureChains } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 
 // @ts-ignore
-goerli.iconUrl = '/icons/NetworkEthereumTest.svg'
+// goerli.iconUrl = '/icons/NetworkEthereumTest.svg'
 // @ts-ignore
 sepolia.iconUrl = '/icons/NetworkEthereumTest.svg'
 
@@ -51,9 +51,9 @@ const localNetwork ={
   },
 }
 
-const CHAINS_SUPPORTED_BY_ALCHEMY = [mainnet, goerli, sepolia] // TODO add other chains supported by Alchemy
-const CHAINS_SUPPORTED_BY_PUBLIC_PROVIDER = [arbitrum, goerli, localNetwork, sepolia]
-const CHAINS_SUPPORTED_BY_HARDHAT = [hardhat]
+const CHAINS_SUPPORTED_BY_ALCHEMY = [mainnet, mantle, linea, taikoTestnetSepolia, sepolia] // TODO add other chains supported by Alchemy
+const CHAINS_SUPPORTED_BY_PUBLIC_PROVIDER = [ mantle, linea, localNetwork, taikoTestnetSepolia, sepolia]
+// const CHAINS_SUPPORTED_BY_HARDHAT = [hardhat]
 
 const PROVIDERS = []
 const CHAINS = []
@@ -65,11 +65,6 @@ if (process.env.NEXT_PUBLIC_ALCHEMY_API_KEY) {
       apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY as string,
     })
   )
-}
-
-if (process.env.NEXT_PUBLIC_USE_HARDHAT_PROVIDER) {
-  CHAINS.push(...CHAINS_SUPPORTED_BY_HARDHAT)
-  PROVIDERS.push(publicProvider())
 }
 
 // Include public provider if no other providers are available.
