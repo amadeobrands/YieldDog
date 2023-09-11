@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import MaxEthChart from "../graphs/MaxEthChart"
 
-import { shortenAddress } from '@lib/utils/shortenAddress'
+import { shortenAddress } from '@/lib/utils/shortenAddress'
 
 // logos
 import balancer from '@/public/logos/balancer-logo.png'

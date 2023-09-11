@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { cn } from '@lib/utils/cn'
+import { cn } from '@/lib/utils/cn'
 
 import { WalletConnect } from '@/components/blockchain/WalletConnect'
 

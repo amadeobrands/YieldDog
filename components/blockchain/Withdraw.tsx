@@ -1,6 +1,6 @@
 
 // UI components
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
 
 // Web3 Hooks
 import { usePrepareContractWrite, useContractWrite} from 'wagmi'
