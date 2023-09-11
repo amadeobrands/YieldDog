@@ -1,5 +1,6 @@
+import Link from 'next/link'
+import { useEffect, useState, useMemo } from 'react'
 
-import { useEffect } from 'react'
 // UI components
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
@@ -12,11 +13,13 @@ import gatewayAbi from '../../abi/Gateway.json'
 import masterPoolAbi from '../../abi/masterPool.json'
 
 interface DepositProps {
-  amountToTransfer: string | number | bigint | undefined;  // or the appropriate type
-  account: string | undefined;           // assuming accountAddress is a string
+  amountToTransfer: string | number | bigint | undefined;
+  account: string | undefined;           
 }
 
 export const Withdraw = ({ amountToTransfer, account }: DepositProps) => {
+
+  const [ message, setMessage ] = useState<string>('')
 
   const gatewayContract = {
     address: '0xde79380FBd39e08150adAA5C6c9dE3146f53029e',
@@ -51,12 +54,19 @@ const { config: configWithdraw, error: errorWithdraw } = usePrepareContractWrite
   abi: gatewayContract.abi,
   functionName: 'redeem',
   args: [amountToTransfer],
+  enabled: false,
 })
 const { data: dataWithdraw, write: writeWithdraw, isLoading } = useContractWrite(configWithdraw)
 
-// const { data: waitForTransactionData, isLoading } = useWaitForTransaction({
-//   hash: dataDeposit?.hash,
-// })
+const { data: waitForTransactionData } = useWaitForTransaction({
+  hash: dataWithdraw?.hash,
+})
+
+useMemo(() => {
+  if (waitForTransactionData?.transactionHash) {
+    setMessage(waitForTransactionData?.transactionHash)
+  }
+},[waitForTransactionData])
 
   const onApproveSpending = () => {
       console.log('Approved')
@@ -77,22 +87,31 @@ const { data: dataWithdraw, write: writeWithdraw, isLoading } = useContractWrite
   }, [amountToTransfer, errorWithdraw, dataWithdraw, masterPoolAllowance, masterPoolAllowanceError])
 
   return (
-    <div className='flex flex-col items-center justify-center w-full'>
-        <Button 
-          className='my-2 text-xl font-bold w-full' 
-          // disabled={loadingETH  || !amount.some(value => Number(value) > 0) || true}
-          onClick={() => onApproveSpending()}
-          >
-            Approve
-          {/* {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Approve'} */}
-        </Button>
-        <Button 
-          className='my-2 text-xl font-bold w-full' 
-          disabled={!masterPoolAllowance}
-          onClick={() => onWithdraw()}
-          >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Withdraw'}
-        </Button>
+    <>
+      <div className='flex flex-col items-center justify-center w-full'>
+      <Button 
+        className='my-2 text-xl font-bold w-full' 
+        // disabled={loadingETH  || !amount.some(value => Number(value) > 0) || true}
+        onClick={() => onApproveSpending()}
+        >
+          Approve
+        {/* {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Approve'} */}
+      </Button>
+      <Button 
+        className='my-2 text-xl font-bold w-full' 
+        disabled={!masterPoolAllowance}
+        onClick={() => onWithdraw()}
+        >
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Withdraw'}
+      </Button>
+    </div>
+    {message && 
+      <div>
+        <p>Success! Your deposit has been sent. View on 
+          <Link className='text-secondary' rel="noopener noreferrer" target="_blank" href={`https://etherscan.io/tx/${message}`}> etherscan.io</Link>
+        </p>
       </div>
+    }
+    </>
   )
 }
