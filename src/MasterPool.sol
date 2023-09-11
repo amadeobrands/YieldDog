@@ -38,7 +38,7 @@ contract MasterPool is IMasterPool, ERC20 {
         uint256 amount0,
         uint256 amount1,
         address receiver
-    ) external returns (uint256 shares) {
+    ) external override returns (uint256 shares) {
         // quick check for amounts
         require(amount0 > 0, "amount0 is 0");
         require(amount1 > 0, "amount1 is 0");
@@ -60,10 +60,18 @@ contract MasterPool is IMasterPool, ERC20 {
 
     function removeLiquidity(
         uint256 shares,
-        address receiver
-    ) public virtual returns (uint256 amount0, uint256 amount1) {
+        address receiver,
+        address owner
+    ) external override returns (uint256 amount0, uint256 amount1) {
         // quick check for amounts
         require(shares > 0, "shares is 0");
+
+        // if (msg.sender != owner) {
+        //     uint256 allowed = allowance[owner][msg.sender]; // Saves gas for limited approvals.
+
+        //     if (allowed != type(uint256).max) allowance[owner][msg.sender] = allowed - shares;
+        // }
+
         // shares is same amount as single amount
         // todo: have a real shares calculation
         amount0 = shares;
@@ -72,11 +80,18 @@ contract MasterPool is IMasterPool, ERC20 {
         asset0.transfer(receiver, amount0);
         asset1.transfer(receiver, amount1);
         // call the inhereted burn function from erc20
-        _burn(msg.sender, shares);
+        _burn(owner, shares);
         // update reserves
         syncReserves();
         // emit the event
-        emit RemoveLiquidity(msg.sender, receiver, amount0, amount1, shares);
+        emit RemoveLiquidity(
+            msg.sender,
+            receiver,
+            owner,
+            amount0,
+            amount1,
+            shares
+        );
     }
 
     function swap(

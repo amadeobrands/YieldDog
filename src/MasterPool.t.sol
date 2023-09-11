@@ -12,6 +12,19 @@ import {MockERC20} from "./MockERC20.sol";
 import "forge-std/console.sol";
 
 contract MasterPoolTest is IMasterPool, Test {
+    // monkey patch for the interface
+    function addLiquidity(
+        uint256 amount0,
+        uint256 amount1,
+        address receiver
+    ) external override returns (uint256 shares) {}
+
+    function removeLiquidity(
+        uint256 shares,
+        address receiver,
+        address owner
+    ) external override returns (uint256 amount0, uint256 amount1) {}
+
     // Pool to be tested
     MasterPool internal _pool;
     // All the usefull tokens
@@ -114,12 +127,17 @@ contract MasterPoolTest is IMasterPool, Test {
         emit RemoveLiquidity(
             address(this),
             address(this),
+            address(this),
             depositAmount, // amount0
             depositAmount, // amount1
             depositAmount // shares
         );
         // removing liquidity
-        (amount0, amount1) = _pool.removeLiquidity(shares, address(this));
+        (amount0, amount1) = _pool.removeLiquidity(
+            shares,
+            address(this),
+            address(this)
+        );
         // check returned tokens
         assertEq(amount0, depositAmount);
         assertEq(amount1, depositAmount);

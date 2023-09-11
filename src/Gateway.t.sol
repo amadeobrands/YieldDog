@@ -44,17 +44,22 @@ contract GatewayTest is IGateway, Test {
         _crvLSD = new MockERC20("Curve LSD", "CRV-LSD", 18);
 
         _pool = new MasterPool(_balLSD, _crvLSD, "YieldDogLSD", "YDLSD");
-        _gateway = new Gateway();
+        _gateway = new Gateway(
+            IERC20(address(_balLSD)),
+            IERC20(address(_crvLSD)),
+            _pool
+        );
 
-        // minting some tokens for testing
+        // minting some eth for testing
         vm.deal(address(this), 100 ether);
-        _weth.deposit{value: 50 ether}();
-        _balLSD.mint(address(this), 100e18);
-        _crvLSD.mint(address(this), 100e18);
+        // monkey patch so that the gateway doesn't have to actually add liquidity to pools
+        _balLSD.mint(address(_gateway), 100e18);
+        _crvLSD.mint(address(_gateway), 100e18);
+        _gateway.approveTokens();
     }
 
     function testDeposit() public {
-        uint256 depositAmount = 10 ether;
+        uint256 depositAmount = 1 ether;
         // checks that pool shares are 0
         assertEq(_pool.balanceOf(address(this)), 0);
         // prepare for event
@@ -63,6 +68,25 @@ contract GatewayTest is IGateway, Test {
         emit Deposit(address(this), depositAmount, depositAmount);
         // deposit
         _gateway.deposit{value: depositAmount}();
+        // check new pool shares, right now shares are 1:1
+        assertEq(_pool.balanceOf(address(this)), depositAmount);
+    }
+
+    function testWithdraw() public {
+        uint256 depositAmount = 1 ether;
+        // deposit
+        _gateway.deposit{value: depositAmount}();
+        // check new pool shares, right now shares are 1:1
+        assertEq(_pool.balanceOf(address(this)), depositAmount);
+
+        // approve tokens
+        _pool.approve(address(_gateway), type(uint256).max);
+        // prepare for event
+        vm.expectEmit(true, false, false, true, address(_gateway));
+        // We emit the event we expect to see.
+        emit Withdraw(address(this), depositAmount, depositAmount);
+        // withdraw
+        _gateway.redeem(_pool.balanceOf(address(this)));
         // check new pool shares, right now shares are 1:1
         assertEq(_pool.balanceOf(address(this)), depositAmount);
     }
