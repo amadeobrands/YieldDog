@@ -1,27 +1,37 @@
+'use client'
 import Link from 'next/link'
 
 import TransactionForm from '@/components/blockchain/TransactionForm'
 import PoolDetails from '@/components/blockchain/PoolDetails'
 
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ArrowRight } from 'lucide-react'
 
 export default function Home() {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center mt-24">
-      <section className='mb-6'>
+    <main className="flex min-h-screen flex-col items-center mt-16">
+      <section className=''>
         <h1 className='text-7xl font-bold text-primary text-center my-6'>MaxETH</h1>
         {/* Vault overview details */}
-          <div className='w-full grid grid-cols-2 gap-3 text-lg mt-3 lg:flex lg:justify-between lg:w-1/3 lg:gap-8'>
+          <div className='w-full grid grid-cols-2 gap-3 text-lg mt-3'>
             <div className='flex flex-col justify-center items-center'>
               <h3 className='text-secondary lg:text-xl'>AUM</h3>
               <h2 className='font-bold text-2xl lg:text-3xl'>1024.42 ETH</h2>
               <h2 className='text-primary font-bold text-xl lg:text-xl'>$1,671,853.44</h2>
             </div>
-            <div className='flex flex-col justify-center items-center'>
-              <h3 className='text-secondary lg:text-xl'>APY</h3>
-              <h2 className='font-bold text-2xl lg:text-3xl'>9.3%</h2>
+            <div className='flex justify-center items-center'>
+              <div>
+                <h3 className='text-secondary lg:text-xl'>APY</h3>
+                <h2 className='font-bold text-2xl lg:text-3xl'>9.3%</h2>
+              </div>
+              <div>
+                <ArrowRight />
+              </div>
+              <div className='flex flex-col justify-center items-center border border-border-2'>
+                <h6 className='text-secondary lg:text-xl'>Base APY</h6>
+                <p>Swap Fees</p>
+              </div>
             </div>
           </div>
         <div className='flex flex-col items-center justify-center m-4 text-secondary/70'>
@@ -34,7 +44,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className='flex'>
+      <section className='flex w-full lg:w-5/6'>
         <TransactionForm />
         <PoolDetails />
       </section>
