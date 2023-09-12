@@ -22,8 +22,8 @@ interface DepositProps {
 
 export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
 
-  const [ transferAmount, setTransferAmount ] = useState<bigint | undefined>()
-  const [ message, setMessage ] = useState<string>('')
+  const [transferAmount, setTransferAmount] = useState<bigint | undefined>()
+  const [message, setMessage] = useState<string>('')
 
   const gatewayContract = {
     address: process.env.NEXT_PUBLIC_GATEWAY_ADDRESS as EthereumAddress,
@@ -48,7 +48,7 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
     abi: gatewayContract.abi,
     functionName: 'deposit',
     value: transferAmount,
-    enabled: false,
+    enabled: true,
   })
   const { data: dataDeposit, write: writeDeposit } = useContractWrite(configDeposit)
 
@@ -57,22 +57,22 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
   })
 
   const onDeposit = () => {
-      writeDeposit?.()
+    writeDeposit?.()
   }
 
   useEffect(() => {
     if (typeof amountToTransfer === 'number') {
       setTransferAmount(BigInt(amountToTransfer / 6))
-  } else if (typeof amountToTransfer === 'bigint') {
+    } else if (typeof amountToTransfer === 'bigint') {
       setTransferAmount(amountToTransfer / BigInt(6) as bigint)
-  }
-  },[amountToTransfer])
+    }
+  }, [amountToTransfer])
 
   useMemo(() => {
     if (waitForTransactionData?.transactionHash) {
       setMessage(waitForTransactionData?.transactionHash)
     }
-  },[waitForTransactionData])
+  }, [waitForTransactionData])
 
   // useEffect(() => {
   //   // console.log('data ->', dataDeposit)
@@ -87,20 +87,20 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
   return (
     <>
       <div className='flex flex-col items-center justify-center w-full'>
-        <Button 
-          className='my-2 text-xl font-bold w-full' 
-          disabled={!writeDeposit || !amountToTransfer}
+        <Button
+          className='my-2 text-xl font-bold w-full'
+          disabled={!writeDeposit}
           onClick={() => onDeposit()}
-          >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" />  : 'Deposit'}
+        >
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Deposit'}
         </Button>
       </div>
-      {message && 
-      <div>
-        <p>Success! Your deposit has been sent. View on 
-          <Link className='text-secondary' rel="noopener noreferrer" target="_blank" href={`https://etherscan.io/tx/${message}`}> etherscan.io</Link>
-        </p>
-      </div>
+      {message &&
+        <div>
+          <p>Success! Your deposit has been sent. View on
+            <Link className='text-secondary' rel="noopener noreferrer" target="_blank" href={`https://etherscan.io/tx/${message}`}> etherscan.io</Link>
+          </p>
+        </div>
       }
     </>
   )
