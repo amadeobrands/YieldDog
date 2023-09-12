@@ -51,7 +51,7 @@ const localNetwork ={
   },
 }
 
-const CHAINS_SUPPORTED_BY_ALCHEMY = [mainnet, mantle, linea, taikoTestnetSepolia, sepolia] // TODO add other chains supported by Alchemy
+const CHAINS_SUPPORTED_BY_ALCHEMY = [mainnet, sepolia] // TODO add other chains supported by Alchemy
 const CHAINS_SUPPORTED_BY_PUBLIC_PROVIDER = [ mantle, linea, localNetwork, taikoTestnetSepolia, sepolia]
 // const CHAINS_SUPPORTED_BY_HARDHAT = [hardhat]
 
