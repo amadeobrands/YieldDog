@@ -12,6 +12,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center my-16">
       <section className=''>
+        
         <h1 className='text-7xl font-bold text-primary text-center my-6'>MaxETH</h1>
         {/* Vault overview details */}
           <div className='w-full grid grid-cols-2 gap-3 text-lg mt-3'>

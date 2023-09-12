@@ -13,6 +13,8 @@ import { Loader2 } from 'lucide-react'
 import gatewayAbi from '../../abi/Gateway.json'
 import masterPoolAbi from '../../abi/masterPool.json'
 
+type EthereumAddress = `0x${string}`
+
 interface DepositProps {
   amountToTransfer: string | number | bigint | undefined;  // or the appropriate type
   account: string | undefined;           // assuming accountAddress is a string
@@ -24,12 +26,12 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
   const [ message, setMessage ] = useState<string>('')
 
   const gatewayContract = {
-    address: '0xde79380FBd39e08150adAA5C6c9dE3146f53029e',
+    address: process.env.NEXT_PUBLIC_GATEWAY_ADDRESS as EthereumAddress,
     abi: gatewayAbi.abi as any
   } as const
 
   const masterPoolContract = {
-    address: '0x04f1A5b9BD82a5020C49975ceAd160E98d8B77Af',
+    address: process.env.NEXT_PUBLIC_MASTERPOOL_ADDRESS as EthereumAddress,
     abi: masterPoolAbi.abi as any
   } as const
 
@@ -42,7 +44,7 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
   })
 
   const { config: configDeposit, error: errorDeposit } = usePrepareContractWrite({
-    address: gatewayContract.address,
+    address: gatewayContract.address as EthereumAddress,
     abi: gatewayContract.abi,
     functionName: 'deposit',
     value: transferAmount,
