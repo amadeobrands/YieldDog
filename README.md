@@ -1,5 +1,32 @@
+<br />
+<p align="center">
+  <a href="https://www.on-defi.com/">
+    <img src="public/YieldDog-white.png" alt="Logo" height="80">
+  </a>
+  <h3 align="center">Yield Dog - ETH Singapore 2023</h3>
+  <p align="center">
+    Fetch the highest yields fully decentralized
+    <br />
+    <a href="https://www.on-defi.com/"><strong>See Yield Dog in action!</strong></a>
+    <br />
+  <a href="https://brrr.money/">
+    <img src="public/yielddog-moon.jpg" alt="Logo" height="250">
+  </a>
+
+<br />
+    <strong>Contact us</strong>
+    ·
+    <a href="https://twitter.com/amadeobrands">Amadeo Brands</a>
+    .
+    <a href="https://twitter.com/stonktrading">Shawn</a><br>
+    .
+    <a href="https://twitter.com/0xEviso">William</a><br>   
+<a href="https://www.on-defi.com/"><strong>See Yield Dog in action!</strong></a>
+  </p>
+</p>
+
 # YieldDog
-Fetch the highest LSD yield
+Yield Dog operates as a "pool of pools" LP aggregator, akin to 1inch but with a decentralized edge. Starting with LSDs for our hackathon prototype, we target a complete MVP within 3-4 months. Our design employs a unique trailing AMM curve to manage pools and encourage arbitrage. Future work will refine the UI and include audits, alongside developing more complex pools like one shifting between 3Pool and sDAI.
 
 ## Technical high level concept
 
