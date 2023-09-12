@@ -100,6 +100,14 @@ Similar concept, pool of pools on top of [sDAI](https://app.sparkprotocol.io/sda
 
 [Gateway contract](https://explorer.testnet.mantle.xyz/tx/0x16a46197218072116351f2d015e8c21fbb8897fb155ff2f62c98f519ff48f6c5)
 
+## Linea goerli testnet
+
+[Deployer Contract](https://goerli.lineascan.build/address/0x792bb625685c772928ad57bdd304ab2124ee013a)
+
+[MasterPool contract](https://goerli.lineascan.build/address/0xc962CB04Abf0a8d46CD225D2f59eCe035391Ef8b)
+
+[Gateway Contract](https://goerli.lineascan.build/address/0x2EfD8e96181006d57af4528070A3004E8624e3DF)
+
 # Technical documentation
 
 ## Getting Started
