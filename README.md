@@ -25,16 +25,16 @@
   </p>
 </p>
 
-# YieldDog
+# Yield Dog
 Yield Dog operates as a "pool of pools" LP aggregator, akin to 1inch but with a decentralized edge. Starting with LSDs for our hackathon prototype, we target a complete MVP within 3-4 months. Our design employs a unique trailing AMM curve to manage pools and encourage arbitrage. Future work will refine the UI and include audits, alongside developing more complex pools like one shifting between 3Pool and sDAI.
 
-## Technical high level concept
+## Technical high-level concept
 
 We want to hold multiple LSD tokens.
 
-Naive way to do that would be using a multi asset vault (ERC4626). Issues with vault are many, lots of on-chain complexity (many smart contracts) and attacks vectors. Namely when swapping between LSD assets (MEV sandwhich attacks, oracles price feed...).
+The naive way to do that would be using a multi-asset vault (ERC4626). Issues with vault are many, lots of on-chain complexity (many smart contracts) and attack vectors. Namely when swapping between LSD assets (MEV sandwich attacks, oracles price feed...).
 
-Using a Pool instead of a vault removes to need for oracle and external asset swapping. Also remove smart contract complexity as both pricing and asset allocation is decided by the AMM formula. The more complex arbitrage calculation is pushed off-chain.
+Using a Pool instead of a vault removes to need for Oracle and external asset swapping. Also, remove smart contract complexity as both pricing and asset allocation are decided by the AMM formula. The more complex arbitrage calculation is pushed off-chain.
 
 Currently there exist 2 pools of LSDs on ETH mainnet (one on [Curve](https://curve.fi/#/ethereum/pools/factory-tricrypto-14/deposit) and one on [Balancer](https://app.balancer.fi/#/ethereum/pool/0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b)). We will build a "Master Pool" that will hold those LSD pool tokens, a pool of pools.
 
@@ -44,7 +44,7 @@ The [MasterPool](https://github.com/amadeobrands/YieldDog/blob/main/src/MasterPo
 
 AddLiquidity(): Enables users to add assets to the liquidity pool, which can then be used for trading or earning rewards. This process usually involves depositing a pair of tokens to maintain the balance in the pool.
 
-RemoveLiquidity(): Lets users remove their assets from the liquidity pool, often in the form of tokens and their respective trading pairs. This action might be subject to fees or penalties, depending on the pool's design.
+RemoveLiquidity(): This lets users remove their assets from the liquidity pool, often in the form of tokens and their respective trading pairs. This action might be subject to fees or penalties, depending on the pool's design.
 
 Swap: Allows users to trade tokens by leveraging the liquidity provided in the pool. For instance, a user can swap Token A for Token B, subject to available liquidity and potential price slippage.
 
@@ -78,7 +78,7 @@ Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src
 
 ## ETH Sepolia USD stables
 
-Similar concept, pool of pools on top of [sDAI](https://app.sparkprotocol.io/sdai/) (yield bearing usd stable token) and curve [3pool](https://curve.fi/#/ethereum/pools/3pool/deposit)
+Similar concept, pool of pools on top of [sDAI](https://app.sparkprotocol.io/sdai/) (yield-bearing usd stable token) and curve [3pool](https://curve.fi/#/ethereum/pools/3pool/deposit)
 
 [Deployer Account](https://sepolia.etherscan.io/address/0x792bb625685c772928ad57bdd304ab2124ee013a)
 
