@@ -9,7 +9,7 @@ Naive way to do that would be using a multi asset vault (ERC4626). Issues with v
 
 Using a Pool instead of a vault removes to need for oracle and external asset swapping. Also remove smart contract complexity as both pricing and asset allocation is decided by the AMM formula. The more complex arbitrage calculation is pushed off-chain.
 
-Currently there exist 2 pools of LSDs on ETH mainnet (one on Curve and one on Balancer). We will build a "Master Pool" that will hold those LSD pool tokens, a pool of pools.
+Currently there exist 2 pools of LSDs on ETH mainnet (one on [Curve](https://curve.fi/#/ethereum/pools/factory-tricrypto-14/deposit) and one on [Balancer](https://app.balancer.fi/#/ethereum/pool/0x42ed016f826165c2e5976fe5bc3df540c5ad0af700000000000000000000058b)). We will build a "Master Pool" that will hold those LSD pool tokens, a pool of pools.
 
 ## Smart contract: MasterPool
 
@@ -41,13 +41,23 @@ Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src
 
 # Deployments
 
-## ETH Sepolia
+## ETH Sepolia LSD
 
 [Deployer Account](https://sepolia.etherscan.io/address/0x792bb625685c772928ad57bdd304ab2124ee013a)
 
 [MasterPool Contract](https://sepolia.etherscan.io/address/0xb8f65b0f4290a452527ccfc95b8cb8c53fbc3f0a#code)
 
 [Gateway Contract](https://sepolia.etherscan.io/address/0xfb5e3a3b77324d75ac223d0d1acd14957abe369e#code)
+
+## ETH Sepolia USD stables
+
+Similar concept, pool of pools on top of [sDAI](https://app.sparkprotocol.io/sdai/) (yield bearing usd stable token) and curve [3pool](https://curve.fi/#/ethereum/pools/3pool/deposit)
+
+[Deployer Account](https://sepolia.etherscan.io/address/0x792bb625685c772928ad57bdd304ab2124ee013a)
+
+[Gateway contract](https://sepolia.etherscan.io/address/0x338E8c220EF8146920b0066285311F72203169A2#code)
+
+[MasterPool contract](https://sepolia.etherscan.io/address/0x2dd6f9265f6f3c72008c8d5ebbe754cf80f3129a#code)
 
 ## Taiko Alpha
 
