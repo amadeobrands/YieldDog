@@ -108,6 +108,14 @@ Similar concept, pool of pools on top of [sDAI](https://app.sparkprotocol.io/sda
 
 [Gateway Contract](https://goerli.lineascan.build/address/0x2EfD8e96181006d57af4528070A3004E8624e3DF)
 
+## Polygon zkevm testnet
+
+[Deployer Contract](https://testnet-zkevm.polygonscan.com/tx/0x74f023577bb219499f4e88a821d00eb4f73f4136bff7160a715c8306f8faf943)
+
+[MasterPool contract](https://testnet-zkevm.polygonscan.com/address/0xc962CB04Abf0a8d46CD225D2f59eCe035391Ef8b)
+
+[Gateway Contract](https://testnet-zkevm.polygonscan.com/address/0x2EfD8e96181006d57af4528070A3004E8624e3DF)
+
 # Technical documentation
 
 ## Getting Started

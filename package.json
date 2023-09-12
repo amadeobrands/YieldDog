@@ -14,7 +14,8 @@
     "deploy:sepolia": "source .env && forge script Deploy --broadcast --rpc-url \"$SEPOLIA_RPC_URL\" --private-key=$PRIVATE_KEY --verify --chain 11155111 --watch",
     "deploy:taiko": "source .env && forge script Deploy --rpc-url \"$TAIKO\" --private-key=$PRIVATE_KEY --broadcast --verify --verifier blockscout --verifier-url https://explorer.test.taiko.xyz/api?",
     "deploy:linea-testnet": "source .env && forge script Deploy --broadcast --rpc-url \"$LINEA_TEST_RPC_URL\" --private-key=$PRIVATE_KEY",
-    "deploy:mantle-testnet": "source .env && forge script Deploy --broadcast --rpc-url \"$MANTLE_TEST_RPC\" --private-key=$PRIVATE_KEY --legacy"
+    "deploy:mantle-testnet": "source .env && forge script Deploy --broadcast --rpc-url \"$MANTLE_TEST_RPC\" --private-key=$PRIVATE_KEY --legacy",
+    "deploy:polygon-zktestnet": "source .env && forge script Deploy --broadcast --rpc-url \"$POLYGON_ZKTEST_RPC_URL\" --private-key=$PRIVATE_KEY --legacy"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
