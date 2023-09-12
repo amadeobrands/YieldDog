@@ -62,11 +62,13 @@ export const Deposit = ({ amountToTransfer, account }: DepositProps) => {
 
   useEffect(() => {
     if (typeof amountToTransfer === 'number') {
-      setTransferAmount(BigInt(amountToTransfer / 6))
+      const roundedAmount = Math.round(amountToTransfer / 6);
+      setTransferAmount(BigInt(roundedAmount));
     } else if (typeof amountToTransfer === 'bigint') {
-      setTransferAmount(amountToTransfer / BigInt(6) as bigint)
+      setTransferAmount(amountToTransfer / BigInt(6));
     }
-  }, [amountToTransfer])
+  }, [amountToTransfer]);
+  
 
   useMemo(() => {
     if (waitForTransactionData?.transactionHash) {
