@@ -14,14 +14,12 @@
   </a>
 
 <br />
-    <strong>Contact us</strong>
-    ·
-    <a href="https://twitter.com/amadeobrands">Amadeo Brands</a>
-    .
-    <a href="https://twitter.com/stonktrading">Shawn</a><br>
-    .
-    <a href="https://twitter.com/0xEviso">William</a><br>   
-<a href="https://www.on-defi.com/"><strong>See Yield Dog in action!</strong></a>
+    <strong>Contact us</strong><br />
+    . <a href="https://twitter.com/amadeobrands">Amadeo Brands</a>
+    . <a href="https://twitter.com/stonktrading">Shawn</a><br>
+    . <a href="https://twitter.com/0xEviso">William</a><br>   
+<a href="https://www.on-defi.com/"><strong>See Yield Dog in action!</strong></a><br />
+<a href="public/YieldDog%20-%20Fetching%20Yields%20-%20ETH%20Singapore.pdf"><strong>See the Yield Dog pitchdeck!</strong></a>
   </p>
 </p>
 
