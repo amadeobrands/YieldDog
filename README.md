@@ -17,7 +17,7 @@
     <strong>Contact us</strong><br />
     . <a href="https://twitter.com/amadeobrands">Amadeo Brands</a>
     . <a href="https://twitter.com/stonktrading">Shawn</a><br>
-    . <a href="https://twitter.com/0xEviso">William</a><br>   
+    . <a href="https://twitter.com/0xEviso">William</a><br>
 <a href="https://www.on-defi.com/"><strong>See Yield Dog in action!</strong></a><br />
 <a href="public/YieldDog%20-%20Fetching%20Yields%20-%20ETH%20Singapore.pdf"><strong>See the Yield Dog pitchdeck!</strong></a>
   </p>
@@ -154,3 +154,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 # Smart Contract walkthrough
 
+# Screenshots
+
+![1](./screenshots/1.png)
+![2](./screenshots/2.png)
+![3](./screenshots/3.png)
+![4](./screenshots/4.png)
+![5](./screenshots/5.png)
+![6](./screenshots/6.png)
