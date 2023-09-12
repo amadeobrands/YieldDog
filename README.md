@@ -1,9 +1,43 @@
 # YieldDog
 Fetch the highest LSD yield
 
-## Introduction
+## Technical high level concept
 
-[TODO]
+We want to hold multiple LSD tokens.
+
+Naive way to do that would be using a multi asset vault (ERC4626). Issues with vault are many, lots of on-chain complexity (many smart contracts) and attacks vectors. Namely when swapping between LSD assets (MEV sandwhich attacks, oracles price feed...).
+
+Using a Pool instead of a vault removes to need for oracle and external asset swapping. Also remove smart contract complexity as both pricing and asset allocation is decided by the AMM formula. The more complex arbitrage calculation is pushed off-chain.
+
+Currently there exist 2 pools of LSDs on ETH mainnet (one on Curve and one on Balancer). We will build a "Master Pool" that will hold those LSD pool tokens, a pool of pools.
+
+## Smart contract: MasterPool
+
+The [MasterPool](https://github.com/amadeobrands/YieldDog/blob/main/src/MasterPool.sol) is a smart contract that functions as a liquidity pool. Here's a detailed breakdown:
+
+AddLiquidity(): Enables users to add assets to the liquidity pool, which can then be used for trading or earning rewards. This process usually involves depositing a pair of tokens to maintain the balance in the pool.
+
+RemoveLiquidity(): Lets users remove their assets from the liquidity pool, often in the form of tokens and their respective trading pairs. This action might be subject to fees or penalties, depending on the pool's design.
+
+Swap: Allows users to trade tokens by leveraging the liquidity provided in the pool. For instance, a user can swap Token A for Token B, subject to available liquidity and potential price slippage.
+
+Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src/MasterPool.t.sol)
+
+## Smart contract: Gateway
+
+The [Gateway](https://github.com/amadeobrands/YieldDog/blob/main/src/Gateway.sol)  is a smart contract that offers a suite of financial functionalities to users. Here's a breakdown:
+
+Deposit(): Enables users to deposit ETH into the contract in return for the master pool LP tokens
+
+Redeem(): Allows users to withdraw their ETH from the contract.
+
+TotalAssets(): Provides the total assets under management (AUM) of the contract, denominated in Wrapped Ether (weth).
+
+sharesToAssets(): Computes the value of a user's assets within the contract, priced in Wrapped Ether (weth).
+
+sharesToUnderlyingAssets(): Gives the value of a user's assets but priced in various Ethereum-based assets such as wsteth, reth, and sfrxeth. This function helps users understand their holdings' composition and value in different underlying assets.
+
+Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src/Gateway.t.sol)
 
 # Deployments
 
@@ -85,40 +119,3 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 # Smart Contract walkthrough
 
-## Technical high level concept
-
-We want to hold multiple LSD tokens.
-
-Naive way to do that would be using a multi asset vault (ERC4626). Issues with vault are many, lots of on-chain complexity (many smart contracts) and attacks vectors. Namely when swapping between LSD assets (MEV sandwhich attacks, oracles price feed...).
-
-Using a Pool instead of a vault removes to need for oracle and external asset swapping. Also remove smart contract complexity as both pricing and asset allocation is decided by the AMM formula. The more complex arbitrage calculation is pushed off-chain.
-
-Currently there exist 2 pools of LSDs on ETH mainnet (one on Curve and one on Balancer). We will build a "Master Pool" that will hold those LSD pool tokens, a pool of pools.
-
-## MasterPool
-
-The [MasterPool](https://github.com/amadeobrands/YieldDog/blob/main/src/MasterPool.sol) is a smart contract that functions as a liquidity pool. Here's a detailed breakdown:
-
-AddLiquidity(): Enables users to add assets to the liquidity pool, which can then be used for trading or earning rewards. This process usually involves depositing a pair of tokens to maintain the balance in the pool.
-
-RemoveLiquidity(): Lets users remove their assets from the liquidity pool, often in the form of tokens and their respective trading pairs. This action might be subject to fees or penalties, depending on the pool's design.
-
-Swap: Allows users to trade tokens by leveraging the liquidity provided in the pool. For instance, a user can swap Token A for Token B, subject to available liquidity and potential price slippage.
-
-Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src/MasterPool.t.sol)
-
-## Gateway
-
-The [Gateway](https://github.com/amadeobrands/YieldDog/blob/main/src/Gateway.sol)  is a smart contract that offers a suite of financial functionalities to users. Here's a breakdown:
-
-Deposit(): Enables users to deposit ETH into the contract in return for the master pool LP tokens
-
-Redeem(): Allows users to withdraw their ETH from the contract.
-
-TotalAssets(): Provides the total assets under management (AUM) of the contract, denominated in Wrapped Ether (weth).
-
-sharesToAssets(): Computes the value of a user's assets within the contract, priced in Wrapped Ether (weth).
-
-sharesToUnderlyingAssets(): Gives the value of a user's assets but priced in various Ethereum-based assets such as wsteth, reth, and sfrxeth. This function helps users understand their holdings' composition and value in different underlying assets.
-
-Foundry test files [here](https://github.com/amadeobrands/YieldDog/blob/main/src/Gateway.t.sol)
